@@ -37,13 +37,13 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="User", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=UserAnswer::class, mappedBy="User")
      */
-    private $answers;
+    private $userAnswers;
 
     public function __construct()
     {
-        $this->answers = new ArrayCollection();
+        $this->userAnswers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -125,33 +125,34 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|Answer[]
+     * @return Collection|UserAnswer[]
      */
-    public function getAnswers(): Collection
+    public function getUserAnswers(): Collection
     {
-        return $this->answers;
+        return $this->userAnswers;
     }
 
-    public function addAnswer(Answer $answer): self
+    public function addUserAnswer(UserAnswer $userAnswer): self
     {
-        if (!$this->answers->contains($answer)) {
-            $this->answers[] = $answer;
-            $answer->setUser($this);
+        if (!$this->userAnswers->contains($userAnswer)) {
+            $this->userAnswers[] = $userAnswer;
+            $userAnswer->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeAnswer(Answer $answer): self
+    public function removeUserAnswer(UserAnswer $userAnswer): self
     {
-        if ($this->answers->contains($answer)) {
-            $this->answers->removeElement($answer);
+        if ($this->userAnswers->contains($userAnswer)) {
+            $this->userAnswers->removeElement($userAnswer);
             // set the owning side to null (unless already changed)
-            if ($answer->getUser() === $this) {
-                $answer->setUser(null);
+            if ($userAnswer->getUser() === $this) {
+                $userAnswer->setUser(null);
             }
         }
 
         return $this;
     }
+
 }

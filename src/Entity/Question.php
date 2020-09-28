@@ -25,6 +25,12 @@ class Question
     private $question;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="questions")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $Category;
+
+    /**
      * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="Question", orphanRemoval=true)
      */
     private $answers;
@@ -47,6 +53,18 @@ class Question
     public function setQuestion(string $question): self
     {
         $this->question = $question;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->Category;
+    }
+
+    public function setCategory(?Category $Category): self
+    {
+        $this->Category = $Category;
 
         return $this;
     }
