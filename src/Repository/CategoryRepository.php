@@ -69,7 +69,7 @@ class CategoryRepository extends ServiceEntityRepository
         $entityManager = $this->getEntityManager();
         
         $query = $entityManager->createQuery(
-            'SELECT  q.id as question_id, q.question, a.id as answer_id, a.answer 
+            'SELECT c.id, c.name, q.id as question_id, q.question, a.id as answer_id, a.answer 
             FROM App\Entity\Question q
             INNER JOIN q.answers a 
             INNER JOIN q.Category c  
