@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Category;
-use App\Form\SurveyType;
-use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,35 +28,75 @@ class SurveyController extends AbstractController
      */
     public function questions(Request $request, $id)
     {
-        $unordered_questions = $this->getDoctrine()
+        $unordered_categories = $this->getDoctrine()
             ->getRepository(Category::class)
             ->findAllCategoryQuestions($id);
 
-        var_dump($unordered_questions);
-        $questions = array();
+        // var_dump($unordered_questions);
+        $categories = array();
 
-        if (count($unordered_questions) > 0) {
+        if (count($unordered_categories) > 0) {
 
-            foreach ($unordered_questions as $question) {
+            foreach ($unordered_categories as $question) {
 
-                $questions[$question["question_id"]]["question"] =  $question["question"];
-                $questions[$question["question_id"]]["answers"][$question["answer_id"]] = $question["answer"];
+                $categories["questions"][$question["question_id"]]["question"] =  $question["question"];
+                $categories["questions"][$question["question_id"]]["answers"][$question["answer_id"]] = $question["answer"];
             }
 
-            $questions["category_id"] = $unordered_questions[0]["id"];
-            $questions["category_name"] = $unordered_questions[0]["name"];
+            $categories["category_id"] = $unordered_categories[0]["id"];
+            $categories["category_name"] = $unordered_categories[0]["name"];
         }
-        var_dump($questions);
+        dump($categories);
 
 
-        $form = $this->createForm(SurveyType::class, $questions);
-        $form->handleRequest($request);
+        // $form = $this->createFormBuilder($questions["questions"]);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        // foreach ($questions["questions"] as $key => $question) {
 
-            return $this->redirectToRoute('category_index');
-        }
+        //     dump($question);
+        //     $form->add(
+        //         "question_" . $key,
+        //         ChoiceType::class,
+        //         [
+        //             'choices' => $question["answers"]
+        //         ],
+        //         array(
+        //             "label" => $question["question"],
+        //             "expanded" => true,
+        //             "multiple" => false,
+        //             "attr" => array(
+        //             //     "expanded" => true,
+        //             // "multiple" => false,
+        //             "label" => $question["question"],
+        //                 "class" => "form-control"
+        //             )
+        //         )
+        //     );
+
+        //     // $form->add("question_" . $key,  ChoiceType::class, array(
+        //     //     "attr" => array(
+        //     //         "class" => "form-control"
+        //     //     )
+        //     // ));
+        // }
+
+        // $form->add("save",  SubmitType::class, array(
+        //     "label" => "Submit Survey",
+        //     "attr" => array(
+        //         "class" => "btn btn-primary mt-3"
+        //     )
+        // ));
+
+        // $form = $form->getForm();
+
+        // $form->handleRequest($request);
+
+        // if ($form->isSubmitted() && $form->isValid()) {
+        //     $this->getDoctrine()->getManager()->flush();
+
+        //     $this->addFlash("info", "Thank you for submitting the survey");
+        //     return $this->redirectToRoute('homepage');
+        // }
 
         // return $this->render('category/edit.html.twig', [
         //     'category' => $category,
@@ -67,7 +105,8 @@ class SurveyController extends AbstractController
 
         // die();
         return $this->render('survey/questions.html.twig', [
-            'questions' => $questions,
+            'categories' => $categories,
+            // 'form' => $form->createView(),
         ]);
     }
 }

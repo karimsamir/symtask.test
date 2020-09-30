@@ -1,16 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Survey for {{ questions.category_name }}{% endblock %}
+{% block title %}Survey for {{ categories.category_name }}{% endblock %}
 
 {% block body %}
-    <h1>Edit Category</h1>
+<h1>{{ categories.category_name }} Servey</h1>
 
-    {{ form_start(form) }}
+{# {{ form_start(form) }}
         {{ form_widget(form) }}
-        <button class="btn">{{ button_label|default('Save') }}</button>
-    {{ form_end(form) }}
+    {{ form_end(form) }} #}
 
-    <a href="{{ path('category_index') }}">back to list</a>
+<form method="post">
+    <fieldset>
+        {% for q_key, question in categories.questions %}
+        <fieldset class="form-group">
+            <legend>{{ question.question }}</legend>
 
-    {{ include('category/_delete_form.html.twig') }}
+            {% for key, answer in question.answers %}
+
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="answer_{{ q_key }}" id="answer_{{ key }}"
+                        value="{{ key }}">
+                    {{ answer }}
+                </label>
+            </div>
+
+            {% endfor %}
+        </fieldset>
+        {% endfor %}
+
+        <fieldset class="form-group">
+            <button type="button" class="btn btn-primary btn-lg btn-block">Submit</button>
+        </fieldset>
+
+
+    </fieldset>
+</form>
+
+<br>
+<a href="{{ path('homepage') }}">back to list</a>
 {% endblock %}

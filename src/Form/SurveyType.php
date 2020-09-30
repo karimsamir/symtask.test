@@ -20,7 +20,7 @@ class SurveyType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Answer::class,
+            'data_class' => null,
         ]);
     }
 }
