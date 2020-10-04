@@ -7,9 +7,11 @@
 
 {# {{ form_start(form) }}
         {{ form_widget(form) }}
-    {{ form_end(form) }} #}
+ {{ form_end(form) }}    #}
 
-<form method="post">
+
+<form action="{{ path("save_survey") }}" method="post">
+
     <fieldset>
         {% for q_key, question in categories.questions %}
         <fieldset class="form-group">
@@ -19,7 +21,7 @@
 
             <div class="form-check">
                 <label class="form-check-label">
-                    <input type="radio" class="form-check-input" name="answer_{{ q_key }}" id="answer_{{ key }}"
+                    <input type="radio" class="form-check-input" name="question_{{ q_key }}"
                         value="{{ key }}">
                     {{ answer }}
                 </label>
@@ -30,11 +32,12 @@
         {% endfor %}
 
         <fieldset class="form-group">
-            <button type="button" class="btn btn-primary btn-lg btn-block">Submit</button>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
         </fieldset>
 
 
     </fieldset>
+    
 </form>
 
 <br>

@@ -3,7 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+// use App\Form\SurveyType;
+// use Cocur\Slugify\Slugify;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+// use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+// use Symfony\Component\Form\Extension\Core\Type\RadioType;
+// use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -24,10 +29,21 @@ class SurveyController extends AbstractController
     }
 
     /**
+     * @Route("/save_survey", name="save_survey", methods={"POST"})
+     */
+    public function save_survey(Request $request)
+    {
+
+        dump($request);
+        die();
+    }
+
+    /**
      * @Route("/{id}", name="survey", methods={"GET"})
      */
-    public function questions(Request $request, $id)
+    public function questions($id)
     {
+        $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
         $unordered_categories = $this->getDoctrine()
             ->getRepository(Category::class)
             ->findAllCategoryQuestions($id);
@@ -49,11 +65,15 @@ class SurveyController extends AbstractController
         dump($categories);
 
 
-        // $form = $this->createFormBuilder($questions["questions"]);
+        // $form = $this->createFormBuilder();
+        // // $form = $this->createForm(SurveyType::class, $category);
 
-        // foreach ($questions["questions"] as $key => $question) {
+        // // $slugify = new Slugify();
+
+        // foreach ($categories["questions"] as $key => $question) {
 
         //     dump($question);
+        //     // $form->add("question_" . $key,   )
         //     $form->add(
         //         "question_" . $key,
         //         ChoiceType::class,
@@ -61,23 +81,48 @@ class SurveyController extends AbstractController
         //             'choices' => $question["answers"]
         //         ],
         //         array(
-        //             "label" => $question["question"],
-        //             "expanded" => true,
+        //             "widget" => $question["question"],
+        //             "placeholder" => $question["question"],
+        //             "help" => $question["question"],
+        //                 "expanded" => true,
         //             "multiple" => false,
         //             "attr" => array(
         //             //     "expanded" => true,
         //             // "multiple" => false,
         //             "label" => $question["question"],
+        //             "placeholder" => $question["question"],
+        //             "help" => $question["question"],
+
         //                 "class" => "form-control"
         //             )
         //         )
         //     );
 
-        //     // $form->add("question_" . $key,  ChoiceType::class, array(
-        //     //     "attr" => array(
-        //     //         "class" => "form-control"
-        //     //     )
-        //     // ));
+        //     foreach ($question["answers"] as $k => $answer) {
+        //         $form->add(
+        //             "question_" . $key,
+        //             RadioType::class,
+        //             array(
+        //                 "attr" => array(
+        //                 //     "expanded" => true,
+        //                 // "multiple" => false,
+        //                 "label" => $answer,
+        //                 "placeholder" => $answer,
+        //                 "help" => $answer,
+
+        //                     "class" => "form-control"
+        //                 )
+        //             )
+        //         );
+        //     }
+
+
+
+        // $form->add("question_" . $key,  ChoiceType::class, array(
+        //     "attr" => array(
+        //         "class" => "form-control"
+        //     )
+        // ));
         // }
 
         // $form->add("save",  SubmitType::class, array(
