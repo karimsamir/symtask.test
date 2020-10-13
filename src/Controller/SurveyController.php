@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Answer;
 use App\Entity\Category;
+use App\Entity\UserAnswer;
 // use App\Form\SurveyType;
 // use Cocur\Slugify\Slugify;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,7 +13,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 // use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+ /**
+  * Require ROLE_USER for *every* controller method in this class.
+  *
+  * @IsGranted ("ROLE_USER")
+  */
 class SurveyController extends AbstractController
 {
     /**
@@ -33,9 +41,51 @@ class SurveyController extends AbstractController
      */
     public function save_survey(Request $request)
     {
+        $answers = $request->request->get('questions');
+            // var_dump($questions  );
+            // dump($request);
+        // die();
+        $entityManager = $this->getDoctrine()->getManager();
 
-        dump($request);
-        die();
+        foreach ($answers as $selectedAnswerId) {
+ 
+            $answer = $this->getDoctrine()
+            ->getRepository(Answer::class)
+            ->find($selectedAnswerId);
+
+            // dump($question);
+            // dump($selectedAnswerId);
+            // dump($answer);        
+            // die(var_dump($question, $selectedAnswerId));
+
+            $userAnswer = new UserAnswer();
+
+            $userAnswer->setAnswer($answer);
+            $userAnswer->setUser($this->getUser());
+            
+            $entityManager->persist($userAnswer);
+
+        }
+
+        $entityManager->flush();
+        // $category = new Category();
+        // $form = $this->createForm(CategoryType::class, $category);
+        // $form->handleRequest($request);
+
+        // if ($form->isSubmitted() && $form->isValid()) {
+        //     $entityManager = $this->getDoctrine()->getManager();
+        //     $entityManager->persist($category);
+        //     $entityManager->flush();
+
+            $this->addFlash('success', 'Survey saved successfully');
+            return $this->redirectToRoute('homepage');
+        // }
+
+        // return $this->render('category/new.html.twig', [
+        //     'category' => $category,
+        //     'form' => $form->createView(),
+        // ]);
+
     }
 
     /**
