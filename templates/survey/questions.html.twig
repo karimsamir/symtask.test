@@ -12,6 +12,7 @@
 
 <form action="{{ path("save_survey") }}" method="post">
 
+<input type="hidden" name="token" value="{{ csrf_token('survey_submit') }}"/>
     <fieldset>
         {% for q_key, question in categories.questions %}
         <fieldset class="form-group">

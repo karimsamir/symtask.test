@@ -41,7 +41,13 @@ class SurveyController extends AbstractController
      */
     public function save_survey(Request $request)
     {
-        $answers = $request->request->get('questions');
+
+        $submittedToken = $request->request->get('token');
+
+        // 'delete-item' is the same value used in the template to generate the token
+        if ($this->isCsrfTokenValid('survey_submit', $submittedToken)) {
+            
+            $answers = $request->request->get('questions');
             // var_dump($questions  );
             // dump($request);
         // die();
@@ -68,23 +74,15 @@ class SurveyController extends AbstractController
         }
 
         $entityManager->flush();
-        // $category = new Category();
-        // $form = $this->createForm(CategoryType::class, $category);
-        // $form->handleRequest($request);
-
-        // if ($form->isSubmitted() && $form->isValid()) {
-        //     $entityManager = $this->getDoctrine()->getManager();
-        //     $entityManager->persist($category);
-        //     $entityManager->flush();
-
+        
             $this->addFlash('success', 'Survey saved successfully');
             return $this->redirectToRoute('homepage');
-        // }
+        
+        }
 
-        // return $this->render('category/new.html.twig', [
-        //     'category' => $category,
-        //     'form' => $form->createView(),
-        // ]);
+        $this->addFlash('error', 'Invalid Data, Please reload the form');
+        return $this->redirectToRoute('homepage');
+    
 
     }
 
