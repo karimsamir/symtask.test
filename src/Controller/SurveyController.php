@@ -5,14 +5,13 @@ namespace App\Controller;
 use App\Entity\Answer;
 use App\Entity\Category;
 use App\Entity\UserAnswer;
-// use App\Form\SurveyType;
-// use Cocur\Slugify\Slugify;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-// use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-// use Symfony\Component\Form\Extension\Core\Type\RadioType;
-// use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 use Symfony\Component\HttpFoundation\Request;
+
 use Symfony\Component\Routing\Annotation\Route;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
  /**
@@ -52,6 +51,7 @@ class SurveyController extends AbstractController
             // dump($request);
         // die();
         $entityManager = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
 
         foreach ($answers as $selectedAnswerId) {
  
@@ -67,9 +67,11 @@ class SurveyController extends AbstractController
             $userAnswer = new UserAnswer();
 
             $userAnswer->setAnswer($answer);
-            $userAnswer->setUser($this->getUser());
+            $userAnswer->setUser($user);
+            // $user->addUserAnswer($userAnswer);
             
             $entityManager->persist($userAnswer);
+            // $entityManager->persist($user);
 
         }
 

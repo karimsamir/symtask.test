@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Answer;
 use App\Entity\Category;
 use App\Entity\Question;
+use App\Entity\UserAnswer;
+
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 use Doctrine\ORM\Query\Expr\Join;
@@ -54,18 +56,6 @@ class CategoryRepository extends ServiceEntityRepository
 
     public function findAllCategoryQuestions($categoryId): array
     {
-        // automatically knows to select Products
-        // the "p" is an alias you'll use in the rest of the query
-        // $qb = $this->createQueryBuilder('c')
-        //     ->select("q.category_id", 'q.id as question_id', 'q.question', 'a.id as answer_id', 'a.answer')
-        //     ->innerJoin(Question::class, "q", Join::ON, "c.id = q.category_id")
-        //     ->innerJoin(Answer::class, "a", Join::ON, "q.id = a.question_id")
-        //     ->where('c.id = :id')
-        //     ->setParameter('id', $categoryId);
-        // // ->orderBy('p.price', 'ASC');
-
-        // $query = $qb->getQuery();
-
         $entityManager = $this->getEntityManager();
         
         $query = $entityManager->createQuery(
@@ -76,12 +66,23 @@ class CategoryRepository extends ServiceEntityRepository
             WHERE c.id = :id'
         )->setParameter('id', $categoryId);
 
-        // dump(($query));
-        // return $query->execute(null,\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
         return $query->execute();
-
-        // dump($query->execute());
-        // to get just one result:
-        // $product = $query->setMaxResults(1)->getOneOrNullResult();
     }
+
+    public function findUserSubmittedCategories($user_id): array
+    {
+        $entityManager = $this->getEntityManager();
+        
+        $query = $entityManager->createQuery(
+            'SELECT c.id, c.name, q.id as question_id, q.question, a.id as answer_id, a.answer 
+            FROM App\Entity\Question q
+            INNER JOIN q.answers a 
+            INNER JOIN q.Category c  
+            INNER JOIN a.userAnswers ua  
+            WHERE ua.User != :User'
+        )->setParameter('User', $user_id);
+
+        return $query->execute();
+    }
+
 }
