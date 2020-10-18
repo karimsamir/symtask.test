@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Answer;
-use App\Entity\Category;
+use App\Entity\Quiz;
 use App\Entity\Question;
 use App\Entity\UserAnswer;
 
@@ -13,20 +13,20 @@ use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Category|null find($id, $lockMode = null, $lockVersion = null)
- * @method Category|null findOneBy(array $criteria, array $orderBy = null)
- * @method Category[]    findAll()
- * @method Category[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Quiz|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Quiz|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Quiz[]    findAll()
+ * @method Quiz[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CategoryRepository extends ServiceEntityRepository
+class QuizRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Category::class);
+        parent::__construct($registry, Quiz::class);
     }
 
     // /**
-    //  * @return Category[] Returns an array of Category objects
+    //  * @return Quiz[] Returns an array of Quiz objects
     //  */
     /*
     public function findByExampleField($value)
@@ -43,7 +43,7 @@ class CategoryRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Category
+    public function findOneBySomeField($value): ?Quiz
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.exampleField = :val')
@@ -54,7 +54,7 @@ class CategoryRepository extends ServiceEntityRepository
     }
     */
 
-    public function findAllCategoryQuestions($categoryId): array
+    public function findAllQuizQuestions($quizId): array
     {
         $entityManager = $this->getEntityManager();
         
@@ -62,9 +62,9 @@ class CategoryRepository extends ServiceEntityRepository
             'SELECT c.id, c.name, q.id as question_id, q.question, a.id as answer_id, a.answer 
             FROM App\Entity\Question q
             INNER JOIN q.answers a 
-            INNER JOIN q.Category c  
+            INNER JOIN q.Quiz c  
             WHERE c.id = :id'
-        )->setParameter('id', $categoryId);
+        )->setParameter('id', $quizId);
 
         return $query->execute();
     }
@@ -77,7 +77,7 @@ class CategoryRepository extends ServiceEntityRepository
             'SELECT c.id, c.name, q.id as question_id, q.question, a.id as answer_id, a.answer 
             FROM App\Entity\Question q
             INNER JOIN q.answers a 
-            INNER JOIN q.Category c  
+            INNER JOIN q.Quiz c  
             INNER JOIN a.userAnswers ua  
             WHERE ua.User != :User'
         )->setParameter('User', $user_id);

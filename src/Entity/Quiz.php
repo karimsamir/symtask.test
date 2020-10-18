@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\CategoryRepository;
+use App\Repository\QuizRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=CategoryRepository::class)
+ * @ORM\Entity(repositoryClass=QuizRepository::class)
  */
-class Category
+class Quiz
 {
     /**
      * @ORM\Id
@@ -25,7 +25,7 @@ class Category
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Question::class, mappedBy="Category", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Question::class, mappedBy="Quiz", orphanRemoval=true)
      */
     private $questions;
 
@@ -63,7 +63,7 @@ class Category
     {
         if (!$this->questions->contains($question)) {
             $this->questions[] = $question;
-            $question->setCategory($this);
+            $question->setQuiz($this);
         }
 
         return $this;
@@ -74,8 +74,8 @@ class Category
         if ($this->questions->contains($question)) {
             $this->questions->removeElement($question);
             // set the owning side to null (unless already changed)
-            if ($question->getCategory() === $this) {
-                $question->setCategory(null);
+            if ($question->getQuiz() === $this) {
+                $question->setQuiz(null);
             }
         }
 

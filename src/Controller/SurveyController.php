@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Answer;
-use App\Entity\Category;
+use App\Entity\Quiz;
 use App\Entity\UserAnswer;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +27,7 @@ class SurveyController extends AbstractController
     public function index()
     {
         $categories = $this->getDoctrine()
-            ->getRepository(Category::class)
+            ->getRepository(Quiz::class)
             ->findAll();
 
         return $this->render('survey/index.html.twig', [
@@ -93,10 +93,10 @@ class SurveyController extends AbstractController
      */
     public function questions($id)
     {
-        $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
+        $quiz = $this->getDoctrine()->getRepository(Quiz::class)->find($id);
         $unordered_categories = $this->getDoctrine()
-            ->getRepository(Category::class)
-            ->findAllCategoryQuestions($id);
+            ->getRepository(Quiz::class)
+            ->findAllQuizQuestions($id);
 
         // var_dump($unordered_questions);
         $categories = array();
@@ -109,14 +109,14 @@ class SurveyController extends AbstractController
                 $categories["questions"][$question["question_id"]]["answers"][$question["answer_id"]] = $question["answer"];
             }
 
-            $categories["category_id"] = $unordered_categories[0]["id"];
-            $categories["category_name"] = $unordered_categories[0]["name"];
+            $categories["quiz_id"] = $unordered_categories[0]["id"];
+            $categories["quiz_name"] = $unordered_categories[0]["name"];
         }
         dump($categories);
 
 
         // $form = $this->createFormBuilder();
-        // // $form = $this->createForm(SurveyType::class, $category);
+        // // $form = $this->createForm(SurveyType::class, $quiz);
 
         // // $slugify = new Slugify();
 
@@ -193,8 +193,8 @@ class SurveyController extends AbstractController
         //     return $this->redirectToRoute('homepage');
         // }
 
-        // return $this->render('category/edit.html.twig', [
-        //     'category' => $category,
+        // return $this->render('quiz/edit.html.twig', [
+        //     'quiz' => $quiz,
         //     'form' => $form->createView(),
         // ]);
 

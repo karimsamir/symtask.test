@@ -3,17 +3,17 @@
 namespace App\DataFixtures;
 
 use App\Entity\Answer;
-use App\Entity\Category;
+use App\Entity\Quiz;
 use App\Entity\Question;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class CategoryFixtures extends Fixture
+class QuizFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
 
-        $categories = array(
+        $quizes = array(
             "Social Media" => array(
                 "What is your favourite social media platform?" => array(
                     "answers" => array(
@@ -69,7 +69,7 @@ class CategoryFixtures extends Fixture
                     )
 
                 ),
-                "Which category best desribes your involvement in sport?" => array(
+                "Which quiz best desribes your involvement in sport?" => array(
                     "answers" => array(
                         "participator", "PE Teacher", "Coach", "Activity Leader", "Manager"
                     )
@@ -85,18 +85,18 @@ class CategoryFixtures extends Fixture
             )
         );
 
-        foreach ($categories as $category_name => $questions) {
+        foreach ($quizes as $quiz_name => $questions) {
 
-            $category = new Category();
-            $category->setName($category_name);
+            $quiz = new Quiz();
+            $quiz->setName($quiz_name);
 
-            $manager->persist($category);
+            $manager->persist($quiz);
 
             foreach ($questions as $question_name => $answers) {
 
                 $question = new Question();
                 $question->setQuestion($question_name);
-                $question->setCategory($category);
+                $question->setQuiz($quiz);
 
                 $manager->persist($question);
 

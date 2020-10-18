@@ -25,10 +25,10 @@ class Question
     private $question;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="questions")
+     * @ORM\ManyToOne(targetEntity=Quiz::class, inversedBy="questions")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $Category;
+    private $Quiz;
 
     /**
      * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="Question", orphanRemoval=true)
@@ -63,14 +63,14 @@ class Question
         return $this;
     }
 
-    public function getCategory(): ?Category
+    public function getQuiz(): ?Quiz
     {
-        return $this->Category;
+        return $this->Quiz;
     }
 
-    public function setCategory(?Category $Category): self
+    public function setQuiz(?Quiz $Quiz): self
     {
-        $this->Category = $Category;
+        $this->Quiz = $Quiz;
 
         return $this;
     }

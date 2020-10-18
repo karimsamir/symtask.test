@@ -12,12 +12,12 @@
     </tr>
   </thead>
   <tbody>
-    {% for category in categories %}
+    {% for quiz in categories %}
     <tr>
       {# <th scope="row">Default</th> #}
-      <td>{{ category.name }}</td>
+      <td>{{ quiz.name }}</td>
       <td> 
-      <a href="{{ path("survey", {id: category.id}) }}">Start servey</a>
+      <a href="{{ path("survey", {id: quiz.id}) }}">Start servey</a>
       </td>
     </tr>
      
