@@ -12,7 +12,7 @@
 
 <form action="{{ path("save_survey") }}" method="post">
 
-<input type="hidden" name="token" value="{{ csrf_token('survey_submit') }}"/>
+    <input type="hidden" name="token" value="{{ csrf_token('survey_submit') }}" />
     <fieldset>
         {% for q_key, question in categories.questions %}
         <fieldset class="form-group">
@@ -22,8 +22,8 @@
 
             <div class="form-check">
                 <label class="form-check-label">
-                    <input type="radio" class="form-check-input" name="questions[{{ q_key }}]"
-                        value="{{ key }}" required>
+                    <input type="radio" class="form-check-input" name="questions[{{ q_key }}]" value="{{ key }}"
+                        required>
                     {{ answer }}
                 </label>
             </div>
@@ -38,8 +38,28 @@
 
 
     </fieldset>
-    
+
 </form>
+{# {{ dump(form) }}
+
+{{ dump(form.questions) }}
+{# {{ form_start(form) }}
+    {# {{ form_row(form.question) }} #}
+
+{# <ul class="questions">
+        {% for questions in form.quiz %}
+            <li>{{ form_row(question.question) }}</li>
+        {% endfor %}
+    </ul>  #}
+
+{# <h3>Answers</h3>
+    <ul class="answers">
+        {% for answer in form.answers %}
+            <li>{{ form_row(answer.answer) }}</li>
+        {% endfor %}
+    </ul> 
+{{ form_end(form) }}  #}
+
 
 <br>
 <a href="{{ path('homepage') }}">back to list</a>

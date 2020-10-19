@@ -14,11 +14,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
- /**
-  * Require ROLE_USER for *every* controller method in this class.
-  *
-  * @IsGranted ("ROLE_USER")
-  */
+/**
+ * Require ROLE_USER for *every* controller method in this class.
+ *
+ * @IsGranted ("ROLE_USER")
+ */
 class SurveyController extends AbstractController
 {
     /**
@@ -45,53 +45,50 @@ class SurveyController extends AbstractController
 
         // 'delete-item' is the same value used in the template to generate the token
         if ($this->isCsrfTokenValid('survey_submit', $submittedToken)) {
-            
+
             $answers = $request->request->get('questions');
             // var_dump($questions  );
             // dump($request);
-        // die();
-        $entityManager = $this->getDoctrine()->getManager();
-        $user = $this->getUser();
+            // die();
+            $entityManager = $this->getDoctrine()->getManager();
+            $user = $this->getUser();
 
-        foreach ($answers as $selectedAnswerId) {
- 
-            $answer = $this->getDoctrine()
-            ->getRepository(Answer::class)
-            ->find($selectedAnswerId);
+            foreach ($answers as $selectedAnswerId) {
 
-            // dump($question);
-            // dump($selectedAnswerId);
-            // dump($answer);        
-            // die(var_dump($question, $selectedAnswerId));
+                $answer = $this->getDoctrine()
+                    ->getRepository(Answer::class)
+                    ->find($selectedAnswerId);
 
-            $userAnswer = new UserAnswer();
+                // dump($question);
+                // dump($selectedAnswerId);
+                // dump($answer);        
+                // die(var_dump($question, $selectedAnswerId));
 
-            $userAnswer->setAnswer($answer);
-            $userAnswer->setUser($user);
-            // $user->addUserAnswer($userAnswer);
-            
-            $entityManager->persist($userAnswer);
-            // $entityManager->persist($user);
+                $userAnswer = new UserAnswer();
 
-        }
+                $userAnswer->setAnswer($answer);
+                $userAnswer->setUser($user);
+                // $user->addUserAnswer($userAnswer);
 
-        $entityManager->flush();
-        
+                $entityManager->persist($userAnswer);
+                // $entityManager->persist($user);
+
+            }
+
+            $entityManager->flush();
+
             $this->addFlash('success', 'Survey saved successfully');
             return $this->redirectToRoute('homepage');
-        
         }
 
         $this->addFlash('error', 'Invalid Data, Please reload the form');
         return $this->redirectToRoute('homepage');
-    
-
     }
 
     /**
      * @Route("/{id}", name="survey", methods={"GET"})
      */
-    public function questions($id)
+    public function questions(Request $request, $id)
     {
         $quiz = $this->getDoctrine()->getRepository(Quiz::class)->find($id);
         $unordered_categories = $this->getDoctrine()
@@ -114,94 +111,29 @@ class SurveyController extends AbstractController
         }
         dump($categories);
 
-
-        // $form = $this->createFormBuilder();
-        // // $form = $this->createForm(SurveyType::class, $quiz);
-
-        // // $slugify = new Slugify();
-
-        // foreach ($categories["questions"] as $key => $question) {
-
-        //     dump($question);
-        //     // $form->add("question_" . $key,   )
-        //     $form->add(
-        //         "question_" . $key,
-        //         ChoiceType::class,
-        //         [
-        //             'choices' => $question["answers"]
-        //         ],
-        //         array(
-        //             "widget" => $question["question"],
-        //             "placeholder" => $question["question"],
-        //             "help" => $question["question"],
-        //                 "expanded" => true,
-        //             "multiple" => false,
-        //             "attr" => array(
-        //             //     "expanded" => true,
-        //             // "multiple" => false,
-        //             "label" => $question["question"],
-        //             "placeholder" => $question["question"],
-        //             "help" => $question["question"],
-
-        //                 "class" => "form-control"
-        //             )
-        //         )
-        //     );
-
-        //     foreach ($question["answers"] as $k => $answer) {
-        //         $form->add(
-        //             "question_" . $key,
-        //             RadioType::class,
-        //             array(
-        //                 "attr" => array(
-        //                 //     "expanded" => true,
-        //                 // "multiple" => false,
-        //                 "label" => $answer,
-        //                 "placeholder" => $answer,
-        //                 "help" => $answer,
-
-        //                     "class" => "form-control"
-        //                 )
-        //             )
-        //         );
-        //     }
+        return $this->render('survey/questions.html.twig', [
+            'categories' => $categories,
+            // 'form' => $form->createView(),
+        ]);
 
 
+        // $quiz = $this->getDoctrine()->getRepository(Quiz::class)->find($id);
+        // // $unordered_categories = $this->getDoctrine()
+        // //     ->getRepository(Quiz::class)
+        // //     ->findAllQuizQuestions($id);
 
-        // $form->add("question_" . $key,  ChoiceType::class, array(
-        //     "attr" => array(
-        //         "class" => "form-control"
-        //     )
-        // ));
-        // }
-
-        // $form->add("save",  SubmitType::class, array(
-        //     "label" => "Submit Survey",
-        //     "attr" => array(
-        //         "class" => "btn btn-primary mt-3"
-        //     )
-        // ));
-
-        // $form = $form->getForm();
+        // dump($quiz);
+        // // die();
+        // $form = $this->createForm(QuizType::class, $quiz);
 
         // $form->handleRequest($request);
 
         // if ($form->isSubmitted() && $form->isValid()) {
-        //     $this->getDoctrine()->getManager()->flush();
-
-        //     $this->addFlash("info", "Thank you for submitting the survey");
-        //     return $this->redirectToRoute('homepage');
+        //     // ... do your form processing, like saving the Task and Tag entities
         // }
-
-        // return $this->render('quiz/edit.html.twig', [
-        //     'quiz' => $quiz,
-        //     'form' => $form->createView(),
-        // ]);
-
-        // die();
+        // dump($form);
         return $this->render('survey/questions.html.twig', [
-            'categories' => $categories,
-            // 'form' => $form->createView(),
+            'form' => $form->createView(),
         ]);
     }
 }
