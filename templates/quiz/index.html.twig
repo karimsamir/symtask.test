@@ -1,35 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Quiz index{% endblock %}
+{% block title %}All surveys!{% endblock %}
 
 {% block body %}
-    <h1>Quiz index</h1>
+<table class="table table-hover">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for quiz in categories %}
-            <tr>
-                <td>{{ quiz.id }}</td>
-                <td>{{ quiz.name }}</td>
-                <td>
-                    <a href="{{ path('quiz_show', {'id': quiz.id}) }}">show</a>
-                    <a href="{{ path('quiz_edit', {'id': quiz.id}) }}">edit</a>
-                </td>
-            </tr>
+  <thead>
+    <tr>
+      <th scope="col">Servey Type</th>
+      <th scope="col">ِِAction</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for quiz in quizes %}
+    <tr>
+      {# <th scope="row">Default</th> #}
+      <td>{{ quiz.name }}</td>
+      <td>
+        {% if (doneQuizes[quiz.id] is defined) %}
+        Done
         {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <a href="{{ path("quiz_detail", {id: quiz.id}) }}">Start servey</a>
 
-    <a href="{{ path('quiz_new') }}">Create new</a>
+        {% endif %}
+      </td>
+
+    </tr>
+
+    {% endfor %}
+
+  </tbody>
+</table>
+
 {% endblock %}

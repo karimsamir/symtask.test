@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Survey for {{ categories.quiz_name }}{% endblock %}
+{% block title %}Survey for {{ quizes.quiz_name }}{% endblock %}
 
 {% block body %}
-<h1>{{ categories.quiz_name }} Servey</h1>
+<h1>{{ quizes.quiz_name }} Servey</h1>
 
 {# {{ form_start(form) }}
         {{ form_widget(form) }}
  {{ form_end(form) }}    #}
 
 
-<form action="{{ path("save_survey") }}" method="post">
+<form action="{{ path("quiz_save_quiz") }}" method="post">
 
     <input type="hidden" name="token" value="{{ csrf_token('survey_submit') }}" />
     <fieldset>
-        {% for q_key, question in categories.questions %}
+        {% for q_key, question in quizes.questions %}
         <fieldset class="form-group">
             <legend>{{ question.question }}</legend>
 
@@ -62,5 +62,5 @@
 
 
 <br>
-<a href="{{ path('homepage') }}">back to list</a>
+<a href="{{ path('quiz_homepage') }}">back to list</a>
 {% endblock %}

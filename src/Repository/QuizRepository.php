@@ -2,14 +2,10 @@
 
 namespace App\Repository;
 
-use App\Entity\Answer;
 use App\Entity\Quiz;
-use App\Entity\Question;
-use App\Entity\UserAnswer;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
-use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -57,7 +53,7 @@ class QuizRepository extends ServiceEntityRepository
     public function findAllQuizQuestions($quizId): array
     {
         $entityManager = $this->getEntityManager();
-        
+
         $query = $entityManager->createQuery(
             'SELECT c.id, c.name, q.id as question_id, q.question, a.id as answer_id, a.answer 
             FROM App\Entity\Question q
@@ -69,20 +65,51 @@ class QuizRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
-    public function findUserSubmittedCategories($user_id): array
+    public function findUserSubmittedQuizes($user_id, $quiz_id = null): array
     {
         $entityManager = $this->getEntityManager();
-        
+
         $query = $entityManager->createQuery(
-            'SELECT c.id, c.name, q.id as question_id, q.question, a.id as answer_id, a.answer 
-            FROM App\Entity\Question q
-            INNER JOIN q.answers a 
-            INNER JOIN q.Quiz c  
-            INNER JOIN a.userAnswers ua  
-            WHERE ua.User != :User'
-        )->setParameter('User', $user_id);
+            'SELECT distinct qz.id as quiz_id
+            FROM App\Entity\Quiz qz
+            INNER JOIN qz.questions q 
+            INNER  JOIN q.answers an  
+            INNER JOIN an.userAnswers ua 
+            LEFT OUTER JOIN ua.User us 
+            WHERE us.id = :user_id'
+        )
+        ->setParameter('user_id', $user_id);
+
+            
+        //     INNER JOIN q.answers a 
+        //     INNER JOIN q.Quiz c  
+        //     INNER JOIN a.userAnswers ua  
+        //     WHERE ua.User != :User'
+        // )->setParameter('User', $user_id);
 
         return $query->execute();
     }
 
+
+    public function findUserSubmitThisQuiz($user_id, $quiz_id = null): array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT distinct qz.id as quiz_id
+            FROM App\Entity\Quiz qz
+            INNER JOIN qz.questions q 
+            INNER  JOIN q.answers an  
+            INNER JOIN an.userAnswers ua 
+            LEFT OUTER JOIN ua.User us 
+            WHERE us.id = :user_id
+            And qz.id = :quiz_id'
+        )
+        ->setParameter('user_id', $user_id)
+        ->setParameter('quiz_id', $quiz_id)
+        ;
+
+        return $query->execute();
+    }
+    
 }
