@@ -50,17 +50,19 @@ class QuizRepository extends ServiceEntityRepository
     }
     */
 
-    public function findAllQuizQuestions($quizId): array
+    public function findAllQuizQuestions($quizId)
     {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
-            'SELECT c.id, c.name, q.id as question_id, q.question, a.id as answer_id, a.answer 
-            FROM App\Entity\Question q
+            'SELECT qz, q, a
+            -- SELECT qz.id, qz.name, q.id as question_id, q.question, a.id as answer_id, a.answer 
+            FROM App\Entity\Quiz qz
+            INNER JOIN qz.Questions q  
             INNER JOIN q.answers a 
-            INNER JOIN q.Quiz c  
-            WHERE c.id = :id'
-        )->setParameter('id', $quizId);
+            WHERE qz.id = :id'
+        )
+            ->setParameter('id', $quizId);
 
         return $query->execute();
     }
@@ -78,9 +80,9 @@ class QuizRepository extends ServiceEntityRepository
             LEFT OUTER JOIN ua.User us 
             WHERE us.id = :user_id'
         )
-        ->setParameter('user_id', $user_id);
+            ->setParameter('user_id', $user_id);
 
-            
+
         //     INNER JOIN q.answers a 
         //     INNER JOIN q.Quiz c  
         //     INNER JOIN a.userAnswers ua  
@@ -105,11 +107,9 @@ class QuizRepository extends ServiceEntityRepository
             WHERE us.id = :user_id
             And qz.id = :quiz_id'
         )
-        ->setParameter('user_id', $user_id)
-        ->setParameter('quiz_id', $quiz_id)
-        ;
+            ->setParameter('user_id', $user_id)
+            ->setParameter('quiz_id', $quiz_id);
 
         return $query->execute();
     }
-    
 }

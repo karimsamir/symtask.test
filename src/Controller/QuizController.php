@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Answer;
+use App\Entity\Question;
 use App\Entity\Quiz;
 use App\Entity\UserAnswer;
 
@@ -70,9 +71,7 @@ class QuizController extends AbstractController
         if ($this->isCsrfTokenValid('quiz_submit', $submittedToken)) {
 
             $answers = $request->request->get('questions');
-            // var_dump($questions  );
-            // dump($request);
-            // die();
+
             $entityManager = $this->getDoctrine()->getManager();
             $user = $this->getUser();
 
@@ -81,11 +80,6 @@ class QuizController extends AbstractController
                 $answer = $this->getDoctrine()
                     ->getRepository(Answer::class)
                     ->find($selectedAnswerId);
-
-                // dump($question);
-                // dump($selectedAnswerId);
-                // dump($answer);        
-                // die(var_dump($question, $selectedAnswerId));
 
                 $userAnswer = new UserAnswer();
 
@@ -124,34 +118,27 @@ class QuizController extends AbstractController
             }
 
         // $quiz = $this->getDoctrine()->getRepository(Quiz::class)->find($id);
-        $unordered_quizes = $this->getDoctrine()
-            ->getRepository(Quiz::class)
+        $quiz = $this->getDoctrine()
+            ->getRepository(Question::class)
             ->findAllQuizQuestions($id);
 
-        // var_dump($unordered_questions);
-        $quizes = array();
-
-        if (count($unordered_quizes) > 0) {
-
-            foreach ($unordered_quizes as $question) {
-
-                $quizes["questions"][$question["question_id"]]["question"] =  $question["question"];
-                $quizes["questions"][$question["question_id"]]["answers"][$question["answer_id"]] = $question["answer"];
+            if (count($quiz) > 0) {
+                $quiz = $quiz[0];
             }
-
-            $quizes["quiz_id"] = $unordered_quizes[0]["id"];
-            $quizes["quiz_name"] = $unordered_quizes[0]["name"];
-        }
-        // dump($quizes);
-
+            else{
+                $this->addFlash('error', "Quiz doesn't exist");
+                return $this->redirectToRoute('quiz_homepage');
+            }
+            
+        // die();
         return $this->render('quiz/questions.html.twig', [
-            'quizes' => $quizes,
+            'quiz' => $quiz,
             // 'form' => $form->createView(),
         ]);
 
 
         // $quiz = $this->getDoctrine()->getRepository(Quiz::class)->find($id);
-        // // $unordered_quizes = $this->getDoctrine()
+        // // $paginator = $this->getDoctrine()
         // //     ->getRepository(Quiz::class)
         // //     ->findAllQuizQuestions($id);
 
@@ -165,8 +152,8 @@ class QuizController extends AbstractController
         //     // ... do your form processing, like saving the Task and Tag entities
         // }
         // dump($form);
-        return $this->render('quiz/questions.html.twig', [
-            'form' => $form->createView(),
-        ]);
+    //     return $this->render('quiz/questions.html.twig', [
+    //         'form' => $form->createView(),
+    //     ]);
     }
 }

@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Survey for {{ quizes.quiz_name }}{% endblock %}
+{% block title %}{{ quiz.name }} quiz{% endblock %}
 
 {% block body %}
-<h1>{{ quizes.quiz_name }} Servey</h1>
+<h1>{{ quiz.name }} quiz</h1>
 
 {# {{ form_start(form) }}
         {{ form_widget(form) }}
@@ -12,19 +12,21 @@
 
 <form action="{{ path("quiz_save_quiz") }}" method="post">
 
-    <input type="hidden" name="token" value="{{ csrf_token('survey_submit') }}" />
+    <input type="hidden" name="token" value="{{ csrf_token('quiz_submit') }}" />
     <fieldset>
-        {% for q_key, question in quizes.questions %}
+        {% for q_key, question in quiz.questions %}
+
         <fieldset class="form-group">
-            <legend>{{ question.question }}</legend>
+            <legend>{{ q_key + 1 }} - {{ question.question }}</legend>
 
             {% for key, answer in question.answers %}
 
             <div class="form-check">
                 <label class="form-check-label">
-                    <input type="radio" class="form-check-input" name="questions[{{ q_key }}]" value="{{ key }}"
+                    <input type="radio" class="form-check-input" 
+                    name="questions[{{ question.getId() }}]" value="{{ answer.getId() }}"
                         required>
-                    {{ answer }}
+                    {{ answer.getAnswer() }}
                 </label>
             </div>
 
