@@ -64,4 +64,46 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         ;
     }
     */
+
+    public function findAllUsersWithSubmittedQuizes(): array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT  u, mus, man, mq, mqz
+                FROM App\Entity\User u
+                INNER JOIN u.userAnswers mus 
+                INNER JOIN mus.Answer man 
+                INNER JOIN man.Question mq 
+                INNER JOIN mq.Quiz mqz
+                WHERE u.id IN
+                (
+                SELECT DISTINCT us.id
+                    FROM App\Entity\UserAnswer ua 
+                    INNER JOIN ua.User us
+                )
+            ')
+        ;
+
+        return $query->execute();
+    }
+
+    public function findAllUsersWithoutSubmittedQuizes(): array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT  u
+                FROM App\Entity\User u
+                WHERE u.id NOT IN
+                (
+                SELECT DISTINCT us.id
+                    FROM App\Entity\UserAnswer ua 
+                    INNER JOIN ua.User us
+                )
+            ')
+        ;
+
+        return $query->execute();
+    }
 }
