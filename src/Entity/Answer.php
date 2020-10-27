@@ -35,6 +35,11 @@ class Answer
      */
     private $userAnswers;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $weight;
+
     public function __construct()
     {
         $this->userAnswers = new ArrayCollection();
@@ -96,6 +101,18 @@ class Answer
                 $userAnswer->setAnswer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getWeight(): ?int
+    {
+        return $this->weight;
+    }
+
+    public function setWeight(int $weight): self
+    {
+        $this->weight = $weight;
 
         return $this;
     }
