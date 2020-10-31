@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ quiz }} quiz statistics!{% endblock %}
+
+{% block body %}
+
+<div class="chart-container" style="position: relative; height:500px; width:100%;">
+    <canvas id="myChart"></canvas>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha256-t9UJPrESBeG2ojKTIcFLPGF7nHi2vEc7f5A2KpH/UBU=" crossorigin="anonymous"></script>
+<script>
+
+var backgroundColor = 'rgba(255, 99, 132, 0.2)';
+var borderColor = 'rgba(255, 99, 132, 1)';
+
+var weights = {{ weights|json_encode|raw }};
+var questions = {{ questions|json_encode|raw }};
+
+console.log(weights);
+console.info(questions);
+
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        //labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: questions,
+        datasets: [{
+            label: 'Weight of answers',
+            //data: [12, 19, 3, 5, 2, 3],
+            data: weights,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(24, 72, 140, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(60, 179, 113, 0.2)',
+                'rgba(255, 165, 0, 0.2)',
+                'rgba(238, 130, 238, 0.2)',
+                'rgba(106, 90, 205, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(24, 72, 140, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(60, 179, 113, 1)',
+                'rgba(255, 165, 0, 1)',
+                'rgba(238, 130, 238, 1)',
+                'rgba(106, 90, 205, 1)'  
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+</script>
+
+{% endblock %}

@@ -103,7 +103,7 @@ class QuizController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="detail", methods={"GET"})
+     * @Route("/{id}", name="detail", methods={"GET"}, requirements={"id":"\d+"}))
      */
     public function questions(Request $request, $id)
     {
@@ -156,4 +156,33 @@ class QuizController extends AbstractController
     //         'form' => $form->createView(),
     //     ]);
     }
+
+    /**
+     * @Route("/statistics", name="quiz_statistics", methods={"GET"})
+     */
+    public function statistics()
+    {
+        $quiz = $this->getUser()->getUserAnswers()[0]->getAnswer()->getQuestion()->getQuiz()->getName();
+
+        $user_answers = $this->getUser()->getUserAnswers();
+
+        $weights = array();
+        $questions = array();
+
+        foreach ($user_answers as $key => $user_answer) {
+
+            $weights[] = $user_answer->getAnswer()->getWeight();
+            $questions[] = $user_answer->getAnswer()->getQuestion()->getQuestion();
+            
+        }
+
+        return $this->render('quiz/statistics.html.twig', [
+            'user' => $this->getUser(),
+            'quiz' => $quiz,
+            'weights' => ($weights),
+            'questions' => ($questions),
+            'user_answers' => $user_answers,
+        ]);
+    }
+
 }
